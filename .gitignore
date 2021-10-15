@@ -27,3 +27,6 @@ hs_err_pid*
 
 # IDE setup
 .idea
+
+# Test related
+target/
