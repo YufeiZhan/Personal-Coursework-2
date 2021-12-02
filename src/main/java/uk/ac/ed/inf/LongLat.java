@@ -1,89 +1,134 @@
 package uk.ac.ed.inf;
 
-//TODO: fill java docs and OOP practice document
 
+/**
+ * Class dealing with the location representation and its relevant utility
+ * methods in the delivery system.
+ *
+ * @author Selina Zhan (s1953505)
+ */
 public class LongLat {
-  //TODO： constant 放哪儿比较好？要用static吗？
-  static final double MIN_LATITUDE = 55.942617;
-  static final double MAX_LATITUDE = 55.946233;
-  static final double MAX_LONGITUDE = -3.184319;
-  static final double MIN_LONGITUDE = -3.192473;
-  static final int HOVERING_STATE = -999;
-  static final int MIN_FLYING_ANGLE = 0;
-  static final int MAX_FLYING_ANGLE = 350;
-  static final double MOVE_LENGTH = 0.00015;
+  //  ---------------------------------------------- Constants ----------------------------------------------
+  /** Confinement area */
+  public static final double MIN_LATITUDE = 55.942617;
+  public static final double MAX_LATITUDE = 55.946233;
+  public static final double MAX_LONGITUDE = -3.184319;
+  public static final double MIN_LONGITUDE = -3.192473;
+  /** Valid State of the drone */
+  public static final int HOVERING_STATE = -999;
+  public static final int MIN_FLYING_ANGLE = 0;
+  public static final int MAX_FLYING_ANGLE = 350;
+  /** Defined length of drone's one move in degrees */
+  public static final double MOVE_LENGTH = 0.00015;
+  /** Distance tolerance for evaluating closeness */
+  public static final double DISTANCE_TOLERANCE = 0.00015;
   
-  public double longitude;
-  public double latitude;
+  //  ---------------------------------------------- Fields & Constructor ----------------------------------------------
+  /** Field definitions */
+  public final double longitude; // x coordinate
+  public final double latitude; // y coordinate
   
-  public LongLat(double longitude, double latitude){
+  /**
+   * LongLat constructor for coordinates on map
+   *
+   * @param longitude longitude of the position point in degrees
+   * @param latitude latitude of the position point in degrees
+   */
+  public LongLat(double longitude, double latitude) {
     this.longitude = longitude;
     this.latitude = latitude;
   }
   
-  public boolean isConfined(){
-    boolean isValidLongitude = ((longitude > MIN_LONGITUDE) & (longitude < MAX_LONGITUDE));
-    boolean isValidLatitude = ((latitude > MIN_LATITUDE) & (latitude < MAX_LATITUDE));
+  //  ---------------------------------------------- Main Functions ----------------------------------------------
+  /**
+   * Check whether a point is within the defined confinement area
+   *
+   * @return true if within confinement area, false otherwise
+   */
+  public boolean isConfined() {
+    boolean isValidLongitude = ( (longitude > MIN_LONGITUDE) & (longitude < MAX_LONGITUDE) );
+    boolean isValidLatitude = ( (latitude > MIN_LATITUDE) & (latitude < MAX_LATITUDE) );
     
-    return isValidLatitude & isValidLongitude;
+    return isValidLongitude & isValidLatitude;
   }
   
-  public double distanceTo(LongLat point){
-    double l1 = point.latitude-latitude;
-    double l2 = point.longitude-longitude;
-    double distance = Math.sqrt( Math.pow(l1,2) + Math.pow(l2,2));
+  /**
+   * Compute Pythagorean distance between points in degrees.
+   *
+   * @param point the other LongLat position point
+   * @return the distance in degrees
+   */
+  public double distanceTo(LongLat point) {
+    double l1 = point.longitude-longitude;
+    double l2 = point.latitude-latitude;
+    double distance = Math.sqrt( Math.pow(l1,2) + Math.pow(l2,2) );
     
     return distance;
   }
   
+  /**
+   * Check whether 2 points are considered close enough.
+   * It is close enough if the distance is strictly less than {@value DISTANCE_TOLERANCE}.
+   *
+   * @param point the other LongLat position point
+   * @return true if within tolerance, false otherwise
+   */
   public boolean closeTo(LongLat point){
-    return distanceTo(point) < MOVE_LENGTH;
+    return distanceTo(point) < DISTANCE_TOLERANCE;
   }
   
-  public LongLat nextPosition(int angle){
-    
-    boolean isHovering = (angle == HOVERING_STATE);
+  /**
+   * Compute the next position of the drone given an angle.
+   * Drone can either fly within range or hover for its next move.
+   * When flying, 0 <= angle <= 350 and should be multiple of 10.
+   *
+   * @param angle either a valid angle to fly or the code to hover
+   * @return the new LongLat point for a valid move, the current LongLat point otherwise
+   */
+  public LongLat nextPosition(int angle) {
     boolean isFlying = (angle >= MIN_FLYING_ANGLE) & (angle <= MAX_FLYING_ANGLE);
     boolean isMultipleOfTen = (angle % 10 == 0);
-    boolean isWithinRange = isFlying & isMultipleOfTen ;
-    boolean validAngle = isWithinRange | isHovering;
+    boolean isValidAngle = isFlying & isMultipleOfTen ;
+    boolean isHovering = (angle == HOVERING_STATE);
+    boolean isValidMove = isValidAngle | isHovering;
     
-    if (validAngle){
-      if (isHovering){
+    if (isValidMove) {
+      if (isHovering) { //position stays unchanged
         return this;
-      } else{ //it's flying
-        double[] newCoord = calculateNewCoord(this,angle);
-        LongLat newPoint = new LongLat(newCoord[0],newCoord[1]);
-        
+      } else{ //flying changes position
+        LongLat newPoint = calculateNewCoord(this,angle);
         return newPoint;
       }
-    } else{ //invalid angle situation
-      System.out.println("ERROR: invalid angle input. The original position is returned.");
+    } else { //invalid move
+      System.err.println("ERROR: invalid angle input for drone's next move. No move executed.");
       return this;
     }
   }
   
   
-  
+  //---------------------------------------------- Helper Functions ----------------------------------------------
   /**
-   * Use conversion formula of polar coordinates to first calculate the delta x and delta y,
-   * which are then added onto the old coordinates to form the new coordinate -
-   * delta x = cos(angle)*{@value MOVE_LENGTH} & delta y = sin(angle)*{@value MOVE_LENGTH} where angles are measured in radians.
+   * Compute the coordinates of the move for the flying type of movement.
    *
-   * Reference to the mathematical formula: <a href="https://mathinsight.org/polar_coordinates">Polar Coordinates</a>
+   * Use the conversion formula of polar coordinates:
+   * - delta x = cos(angle)*{@value MOVE_LENGTH}
+   * - delta y = sin(angle)*{@value MOVE_LENGTH}
+   * where angles are measured in radians.
    *
-   * @param point
-   * @param angle
-   * @return
+   * Reference to the mathematical formula:
+   * <a href="https://mathinsight.org/polar_coordinates">Polar Coordinates</a>
+   *
+   * @param point the old LongLat position point
+   * @param angle valid angle to fly for next move
+   * @return the new LongLat position point after the move
    */
-  private double[] calculateNewCoord(LongLat point, int angle){
+  private LongLat calculateNewCoord(LongLat point, int angle) {
       double oldLong = point.longitude;
       double oldLat = point.latitude;
-      double newLong = oldLong + Math.cos(Math.toRadians(angle))*MOVE_LENGTH;
-      double newLat = oldLat + Math.sin(Math.toRadians(angle))*MOVE_LENGTH;
+      double newLong = oldLong + Math.cos(Math.toRadians(angle)) * MOVE_LENGTH;
+      double newLat = oldLat + Math.sin(Math.toRadians(angle)) * MOVE_LENGTH;
+      LongLat newPoint = new LongLat(newLong, newLat);
       
-      return new double[] {newLong,newLat};
+      return newPoint;
   }
-  
-  
 }
