@@ -25,6 +25,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.mapbox.mapboxsdk</groupId>
+      <artifactId>mapbox-sdk-geojson</artifactId>
+      <version>5.8.0</version>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.11</version>
@@ -80,7 +85,7 @@
         <version>3.0.0</version>
       </plugin>
       
-<!--specify using java version 14 and ask for improved error messages-->
+      <!--specify using java version 14 and ask for improved error messages-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -98,7 +103,7 @@
         </configuration>
       </plugin>
 
-<!--specify where the main class is for jar command-->
+      <!--specify where the main class is for jar command-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -113,7 +118,7 @@
         </configuration>
       </plugin>
 
-<!--maven shade takes several JAR files e.g. the one for GSon and our code to form an uber jar-->
+      <!--maven shade takes several JAR files e.g. the one for GSon and our code to form an uber jar-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
