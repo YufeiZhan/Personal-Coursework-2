@@ -1,6 +1,7 @@
 package uk.ac.ed.inf;
 
-
+import java.sql.Date;
+import java.util.ArrayList;
 
 /**
  * Hello world!
@@ -8,24 +9,29 @@ package uk.ac.ed.inf;
  */
 public class App{
     
-    private static String day;
-    private static String month;
-    private static String year;
+    protected static ServerConnector server;
+    
+    private static DatabaseConnector database;
+    
+    private static Date date;
     private static String websitePort;
     private static String databasePort;
     private static Menus menu;
-    private static ServerConnector server;
     
     
     public static void main(String[] args) {
-        day = args[0];
-        month = args[1];
-        year = args[2];
+        /** Processing command-line arguments */
+        String day = args[0];
+        String month = args[1];
+        String year = args[2];
+        date = Date.valueOf(year + "-" + month + "-" + day);
         websitePort = args[3];
         databasePort = args[4];
+        
+//        /** Set up */
         server = new ServerConnector(websitePort);
-        System.out.println(server.getWhat3WordsStr("blocks","found","civic"));
-        menu = new Menus(server.getMenuStr());
-        System.out.println(menu.getDeliveryCost("Flaming tiger latte"));
+        database = new DatabaseConnector(databasePort);
+        ArrayList<Order> orders = database.queryOrdersByDate(date);
+        
     }
 }

@@ -7,18 +7,20 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 /**
- * Class connected to the running server for real-time info retrieval.
+ * Class connecting to the running server for real-time info retrieval.
  * It can return the latest Json/GeoJson String for the following:
- * - no-fly zones
- * - landmarks
- * - What3Words address
- * - menus
+ * - no-fly zones (GeoJson)
+ * - landmarks (GeoJson)
+ * - What3Words address (Json)
+ * - menus (Json)
  *
  * @author Selina Zhan (s1953505)
  */
 public class ServerConnector {
   
   //  ---------------------------------------------- Constants ----------------------------------------------
+  /** Protocol for web server */
+  public static final String PROTOCOL = "http";
   /** Machine name for the server of the service */
   public static final String MACHINE = "localhost";
   /** Valid status code before getting the web content */
@@ -46,7 +48,7 @@ public class ServerConnector {
    * @return Json String if valid, quit the application otherwise
    */
   public String getMenuStr() {
-    String urlString = "http://" + MACHINE + ":" + port + "/menus/menus.json";
+    String urlString = PROTOCOL + "://" + MACHINE + ":" + port + "/menus/menus.json";
     return getContent(urlString);
   }
   
@@ -56,7 +58,7 @@ public class ServerConnector {
    * @return GeoJson String if valid, quit the application otherwise
    */
   public String getNoFlyZoneStr(){
-    String urlString = "http://" + MACHINE + ":" + port + "/buildings/no-fly-zones.geojson";
+    String urlString = PROTOCOL + "://" + MACHINE + ":" + port + "/buildings/no-fly-zones.geojson";
     return getContent(urlString);
   }
   
@@ -66,7 +68,7 @@ public class ServerConnector {
    * @return GeoJson String if valid, quit the application otherwise
    */
   public String getLandmarkStr(){
-    String urlString = "http://" + MACHINE + ":" + port + "/buildings/landmarks.geojson";
+    String urlString = PROTOCOL + "://" + MACHINE + ":" + port + "/buildings/landmarks.geojson";
     return getContent(urlString);
   }
   
@@ -79,7 +81,7 @@ public class ServerConnector {
    * @return Json String if valid, quit the application otherwise
    */
   public String getWhat3WordsStr(String word1, String word2, String word3){
-    String urlString = "http://" + MACHINE + ":" + port + "/words/" +
+    String urlString = PROTOCOL + "://" + MACHINE + ":" + port + "/words/" +
                         word1 + "/" + word2 + "/" + word3 + "/details.json";
     return getContent(urlString);
   }
@@ -98,7 +100,7 @@ public class ServerConnector {
     try {
       response = CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
     } catch (IOException | InterruptedException e) {
-      System.err.println("FATAl ERROR: Unable to connect to " + MACHINE +
+      System.err.println("FATAl ERROR: Unable to connect to web server " + MACHINE +
               " at port " + port + ". Exit the application.");
       e.printStackTrace();
       System.exit(1);
@@ -106,7 +108,7 @@ public class ServerConnector {
   
     /** Exit the application from the unrecoverable error */
     if (response == null | response.statusCode() != VALID_STATUS_CODE){
-      System.err.println("FATAl ERROR: Invalid response code " +
+      System.err.println("FATAl ERROR: Invalid web server response code " +
               response.statusCode() + ". Exit the application.");
       System.exit(1);
     }

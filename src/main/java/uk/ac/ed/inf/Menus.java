@@ -20,16 +20,14 @@ public class Menus {
   /** Field definitions */
   /** Info of shops updated on daily basis */
   private ArrayList<Shop> shops;
-  /** Data structure for easy retrieval */
+  /** Data structure for easy retrieval of item price */
   private HashMap<String,Integer> prices = new HashMap<>();
   
   /**
    * Menu constructor for the delivery service
-   *
-   * @param Json String from the server
    */
-  public Menus(String Json) {
-    parseMenuJSON(Json);
+  public Menus() {
+    parseMenuJSON(App.server.getMenuStr());
     updatePriceMapping();
   }
   
@@ -52,7 +50,7 @@ public class Menus {
   
   //  ---------------------------------------------- Helper Functions ----------------------------------------------
   /**
-   * Unmarshal retrieved JSON data from string into object.
+   * Unmarshal retrieved JSON data from String into object.
    *
    * @param menuJSON String data from the web server
    * @return unmarshalled object

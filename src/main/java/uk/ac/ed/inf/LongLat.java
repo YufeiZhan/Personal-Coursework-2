@@ -105,7 +105,6 @@ public class LongLat {
     }
   }
   
-  
   //---------------------------------------------- Helper Functions ----------------------------------------------
   /**
    * Compute the coordinates of the move for the flying type of movement.
