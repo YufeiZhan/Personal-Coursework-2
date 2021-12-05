@@ -4,14 +4,17 @@ import java.util.ArrayList;
 import java.sql.Date;
 
 /**
- * Class encapsulating all the info about the orders retrieved from the database.
+ * Class encapsulating all raw info about an order from the databases.
+ *
+ * @author Selina Zhan (s1953505)
  */
 public class Order {
+  //  ---------------------------------------------- Fields & Constructor ----------------------------------------------
   
   public final String orderNo;
   private final Date date;
   private final String studentID;
-  private final String[] destination;
+  private final String destination;
   private final ArrayList<String> items;
   
   
@@ -19,7 +22,28 @@ public class Order {
     orderNo = order;
     date = deliveryDate;
     studentID = customer;
-    destination = deliverTo.split(".");
+    destination = deliverTo;
     this.items = items;
   }
+  
+  //  ---------------------------------------------- Main Functions ----------------------------------------------
+  
+  public String getOrderNo(){
+    return orderNo;
+  }
+  
+  public Date getDate(){
+    return date;
+  }
+  
+  public String getDestination(){
+    return destination;
+  }
+  
+  public ArrayList<String> getItems(){
+    return items;
+  }
+  
+  //  ---------------------------------------------- Helper Functions ----------------------------------------------
+
 }

@@ -7,7 +7,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 /**
- * Class connecting to the running server for real-time info retrieval.
+ * Class connecting to the running server to retrieve the latest raw data for further use.
  * It can return the latest Json/GeoJson String for the following:
  * - no-fly zones (GeoJson)
  * - landmarks (GeoJson)
@@ -28,7 +28,7 @@ public class ServerConnector {
   /** Sole http client for accessing the web server and its content */
   private static final HttpClient CLIENT = HttpClient.newHttpClient();
   
-  //  ---------------------------------------------- Fields & Constructor ----------------------------------------------
+  //  ----------------------------------------- Fields & Constructor ----------------------------------------
   /** port of the running web server */
   public final String port;
   
@@ -41,7 +41,7 @@ public class ServerConnector {
     this.port = port;
   }
   
-  //  ---------------------------------------------- Main Functions ----------------------------------------------
+  //  -------------------------------------------- Main Functions -------------------------------------------
   /**
    * Retrieve the latest Json String for the menu
    *

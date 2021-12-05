@@ -2,8 +2,8 @@ package uk.ac.ed.inf;
 
 
 /**
- * Class dealing with the location representation and its relevant utility
- * methods in the delivery system.
+ * Class emblematic of the visual representation of the coordinate of the delivery system
+ * and its relevant utility methods for the delivery service.
  *
  * @author Selina Zhan (s1953505)
  */
@@ -25,8 +25,8 @@ public class LongLat {
   
   //  ---------------------------------------------- Fields & Constructor ----------------------------------------------
   /** Field definitions */
-  public final double longitude; // x coordinate
-  public final double latitude; // y coordinate
+  private final double x; // longitude
+  private final double y; // latitude
   
   /**
    * LongLat constructor for coordinates on map
@@ -35,8 +35,8 @@ public class LongLat {
    * @param latitude latitude of the position point in degrees
    */
   public LongLat(double longitude, double latitude) {
-    this.longitude = longitude;
-    this.latitude = latitude;
+    this.x = longitude;
+    this.y = latitude;
   }
   
   //  ---------------------------------------------- Main Functions ----------------------------------------------
@@ -46,8 +46,8 @@ public class LongLat {
    * @return true if within confinement area, false otherwise
    */
   public boolean isConfined() {
-    boolean isValidLongitude = ( (longitude > MIN_LONGITUDE) & (longitude < MAX_LONGITUDE) );
-    boolean isValidLatitude = ( (latitude > MIN_LATITUDE) & (latitude < MAX_LATITUDE) );
+    boolean isValidLongitude = ( (x > MIN_LONGITUDE) & (x < MAX_LONGITUDE) );
+    boolean isValidLatitude = ( (y > MIN_LATITUDE) & (y < MAX_LATITUDE) );
     
     return isValidLongitude & isValidLatitude;
   }
@@ -59,8 +59,8 @@ public class LongLat {
    * @return the distance in degrees
    */
   public double distanceTo(LongLat point) {
-    double l1 = point.longitude-longitude;
-    double l2 = point.latitude-latitude;
+    double l1 = point.x - x;
+    double l2 = point.y - y;
     double distance = Math.sqrt( Math.pow(l1,2) + Math.pow(l2,2) );
     
     return distance;
@@ -105,6 +105,20 @@ public class LongLat {
     }
   }
   
+  
+  public double getX(){
+    return x;
+  }
+  
+  public double getY(){
+    return y;
+  }
+  
+  
+  public String toString(){
+    return ("(" + x + "," + y + ")");
+  }
+  
   //---------------------------------------------- Helper Functions ----------------------------------------------
   /**
    * Compute the coordinates of the move for the flying type of movement.
@@ -122,8 +136,8 @@ public class LongLat {
    * @return the new LongLat position point after the move
    */
   private LongLat calculateNewCoord(LongLat point, int angle) {
-      double oldLong = point.longitude;
-      double oldLat = point.latitude;
+      double oldLong = point.x;
+      double oldLat = point.y;
       double newLong = oldLong + Math.cos(Math.toRadians(angle)) * MOVE_LENGTH;
       double newLat = oldLat + Math.sin(Math.toRadians(angle)) * MOVE_LENGTH;
       LongLat newPoint = new LongLat(newLong, newLat);

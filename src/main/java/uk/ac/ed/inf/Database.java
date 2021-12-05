@@ -5,11 +5,11 @@ import java.util.ArrayList;
 
 //TODO: retrieval done, but storage still in this class?
 /**
- * Class connecting to the database for real-time info retrieval and info storage.
+ * Class connecting to the database 'order' and 'orderDetails' to retrieve order information.
  *
  * @author Selina Zhan (s1953505)
  */
-public class DatabaseConnector {
+public class Database {
   //  ---------------------------------------------- Constants ----------------------------------------------
   /** Protocol for database */
   public static final String PROTOCOL = "jdbc:derby";
@@ -20,14 +20,13 @@ public class DatabaseConnector {
   /** port of the database */
   public final String port;
   private Connection conn;
-  private Statement statement;
   
   /**
    * Database Constructor
    *
    * @param port port to access the database
    */
-  public DatabaseConnector(String port) {
+  public Database(String port) {
     this.port = port;
     setUp();
   }
@@ -81,19 +80,16 @@ public class DatabaseConnector {
     return itemList;
   }
   
-  
-  
   //  ---------------------------------------------- Helper Functions ----------------------------------------------
   
 //  TODO
   /**
-   * Setting up initial connection to the database.
+   * Setting up initial connection to the database for later use.
    */
   private void setUp(){
     try{
       String jdbcString = PROTOCOL + "://" + MACHINE + ":" + port + "/derbyDB";
       conn = DriverManager.getConnection(jdbcString);
-      statement = conn.createStatement();
     } catch (SQLException e){
       System.err.println("FATAl ERROR: Unable to connect to database " + MACHINE +
               " at port " + port + ". Exit the application.");
