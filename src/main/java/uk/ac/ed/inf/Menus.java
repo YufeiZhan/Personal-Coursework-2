@@ -5,7 +5,6 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Objects;
 
 import com.google.gson.Gson;
 
@@ -23,9 +22,9 @@ public class Menus {
   /** Field definitions */
   /** Info of shops updated on daily basis */
   private ArrayList<Shop> shops;
-  /** Data structure for easy retrieval of item price */
+  /** Data structure for easy retrieval of item's price */
   private HashMap<String,Integer> prices = new HashMap<>();
-  /** Data structure for easy retrieval of shop locaation */
+  /** Data structure for easy retrieval of item's location */
   private HashMap<String,String> locations = new HashMap<>();
   
   /**
@@ -53,19 +52,32 @@ public class Menus {
     return totalCost;
   }
   
-//  TODO: comments
+  
+//  TODO: test & comments
   /**
    *
    * @param items
    * @return
    */
-  public Object[] getShopLocations(String... items){
+  public ArrayList<String> getShopLocations(ArrayList<String> items){
     HashSet<String> shopLocations = new HashSet<>();
     for (String item:items){
       shopLocations.add(locations.get(item));
     }
     
-    return shopLocations.toArray();
+    // convert HashSet into ArrayList
+    ArrayList<String> result = new ArrayList<>(shopLocations);
+    return result;
+  }
+  
+  public ArrayList<String> getAllShopLocations(){
+    ArrayList<String> locations = new ArrayList<>();
+    
+    for (Shop shop : shops){
+      locations.add(shop.location);
+    }
+    
+    return locations;
   }
   
   //  ---------------------------------------------- Helper Functions ----------------------------------------------

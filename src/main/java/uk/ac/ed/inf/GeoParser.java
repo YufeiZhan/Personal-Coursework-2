@@ -22,7 +22,7 @@ public final class GeoParser {
    * Private constructor to prevent instantiation
    */
   private GeoParser(){ // the default constructor is not allowed so prevent instantiation
-    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    throw new UnsupportedOperationException("GeoParser is a utility class and cannot be instantiated");
   }
   
   //  ---------------------------------------------- Static Functions ----------------------------------------------

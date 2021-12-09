@@ -113,7 +113,7 @@ public class ServerConnector {
       System.exit(1);
     }
     
-    System.out.println("SUCCESS: information retrieved from the server.");
+//    System.out.println("SUCCESS: information retrieved from the server.");
     return response.body();
   }
 }

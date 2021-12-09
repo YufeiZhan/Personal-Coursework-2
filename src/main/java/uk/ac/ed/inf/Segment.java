@@ -1,13 +1,15 @@
 package uk.ac.ed.inf;
 
+import java.util.Objects;
+
 /**
- * Class emblematic of the visual representation of a line from a LongLat point to another.
+ * Class emblematic of the visual representation of a segment from a LongLat point to another.
  */
 public class Segment {
   
   //  ------------------------------------------- Fields & Constructor -------------------------------------------
-  private LongLat start;
-  private LongLat end;
+  private final LongLat start;
+  private final LongLat end;
   
   public Segment(LongLat start, LongLat end){
     this.start = start;
@@ -42,12 +44,33 @@ public class Segment {
     return satisfiable ? true : false;
   }
   
+  public double distance(){
+    return start.distanceTo(end);
+  }
+  
+  
   public LongLat getStartPt(){
     return start;
   }
   
   public LongLat getEndPt(){
     return end;
+  }
+  
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Segment)) return false;
+    Segment segment = (Segment) o;
+
+    return (start.equals(segment.start) && end.equals(segment.end)) ||
+            (start.equals(segment.end) && end.equals(segment.start));
+  }
+
+  @Override
+  public int hashCode() {
+    /** want to make sure that segment with reversed ends is hashed to the same bucket */
+    return Objects.hash(start.hashCode() * end.hashCode());
   }
   
   //  ---------------------------------------------- Helper Functions ----------------------------------------------

@@ -1,6 +1,8 @@
 package uk.ac.ed.inf;
 
 
+import java.util.Objects;
+
 /**
  * Class emblematic of the visual representation of the coordinate of the delivery system
  * and its relevant utility methods for the delivery service.
@@ -105,21 +107,125 @@ public class LongLat {
     }
   }
   
+  /**
+   * Calculate the bearing of the current point to the other point.
+   *
+   * @param point the other point
+   * @return the bearing in degree
+   */
+  public double bearingTo(LongLat point){
+    Quadrant quadrant = getQuadrant(point);
+    double deltaX = point.getX() - this.x;
+    double deltaY = point.getY() - this.y;
+    
+    switch (quadrant){
+      case ORIGIN:
+        return HOVERING_STATE;
+      case X_AXIS:
+        if (deltaX > 0){
+          return 0;
+        }else{
+          return 180;
+        }
+      case Y_AXIS:
+        if (deltaY > 0){
+          return 90;
+        }else{
+          return 270;
+        }
+      case FIRST:
+        return Math.atan(deltaY/deltaX) * 180 / Math.PI;
+      case SECOND:
+        return Math.atan(deltaY/deltaX) * 180 / Math.PI + 180;
+      case THIRD:
+        return Math.atan(deltaY/deltaX) * 180 / Math.PI + 180;
+      default: //quadrant = FOURTH
+        return Math.atan(deltaY/deltaX) * 180 / Math.PI +360;
+    }
+    
+  }
   
+
+  /**
+   * Getter of latitude
+   * @return latitude
+   */
   public double getX(){
     return x;
   }
   
+  /**
+   * Getter of longitude
+   * @return longitude
+   */
   public double getY(){
     return y;
   }
   
-  
-  public String toString(){
-    return ("(" + x + "," + y + ")");
+    @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof LongLat)) return false;
+    LongLat longLat = (LongLat) o;
+    return Double.compare(longLat.getX(), getX()) == 0 &&
+            Double.compare(longLat.getY(), getY()) == 0;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getX(), getY());
+  }
+
+  @Override
+  public String toString() {
+    return "LongLat{" +
+            "x=" + x +
+            ", y=" + y +
+            '}';
+  }
+  //------------------------------------------- Helper Functions/Class -------------------------------------------
+  /**
+   * Consider the current point as origin and decide which quadrant the other point is.
+   *
+   * @param point the other point
+   * @return value of the Quadrant enumeration
+   */
+  private Quadrant getQuadrant(LongLat point){
+    double deltaX = point.getX() - this.x;
+    double deltaY = point.getY() - this.y;
+    
+    if (deltaX == 0 && deltaY == 0){
+      return Quadrant.ORIGIN;
+    }
+    
+    if (deltaX == 0){
+      return Quadrant.Y_AXIS;
+    }
+    
+    if (deltaY == 0){
+      return Quadrant.X_AXIS;
+    }
+    
+    if (deltaX > 0 && deltaY > 0){
+      return Quadrant.FIRST;
+    }
+    
+    if (deltaX < 0 && deltaY > 0){
+      return Quadrant.SECOND;
+    }
+    
+    if (deltaX < 0 && deltaY < 0){
+      return Quadrant.THIRD;
+    }else {
+      return Quadrant.FOURTH;
+    }
   }
   
-  //---------------------------------------------- Helper Functions ----------------------------------------------
+  /**
+   * Possible quadrants of the coordinate
+   */
+  private enum Quadrant { FIRST, SECOND, THIRD, FOURTH, X_AXIS, Y_AXIS, ORIGIN }
+  
   /**
    * Compute the coordinates of the move for the flying type of movement.
    *

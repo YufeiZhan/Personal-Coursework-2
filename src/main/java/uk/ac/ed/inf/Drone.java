@@ -19,25 +19,35 @@ public class Drone {
   private LongLat currentLocation;
   private int battery;
   private ArrayList<Order> deliveredOrders;
-  private ArrayList<LongLat> trajectory;
   
   public Drone(){
-    LongLat currentLocation = STARTING_POINT;
+    currentLocation = STARTING_POINT;
     battery = FULL_BATTERY;
     deliveredOrders = new ArrayList<>();
-    trajectory = new ArrayList<>();
   }
   
   //  ---------------------------------------------- Main Functions ----------------------------------------------
+  public void move(LongLat newLocation){
+    currentLocation = newLocation;
+    battery = battery - 1;
+  }
   
+  public void orderDelivered(Order o){
+    deliveredOrders.add(o);
+  }
   public LongLat getCurrentLocation(){
     return currentLocation;
   }
   
-  public void deliverAnOrder(Order o){
-    //TODO: to be implemented
+  public int getBattery(){
+    return battery;
   }
   
+  public ArrayList<Order> getDeliveredOrders(){
+    return deliveredOrders;
+  }
+  
+
   //  ---------------------------------------------- Helper Functions ----------------------------------------------
   
 }
